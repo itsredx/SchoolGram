@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat</h1>
+
+    <div>
+        <h2>Chat Messages</h2>
+        <ul>
+            {% for message in messages %}
+                <li>
+                    <p>{{ message.sender.username }} - {{ message.timestamp }}</p>
+                    {% if message.content_type == 'text' %}
+                        <p>{{ message.content }}</p>
+                    {% elif message.content_type in ['image', 'video'] %}
+                        <img src="{{ message.content.url }}" alt="Image/Video">
+                    {% elif message.content_type == 'document' %}
+                        <a href="{{ message.content.url }}" target="_blank">Download Document</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        <h2>Send Message</h2>
+        <form id="send-message-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="chat_id" value="{{ chat.id }}">
+            <label for="content">Message:</label>
+            <textarea name="content" required></textarea>
+            <label for="attachment">Attachment:</label>
+            <input type="file" name="attachment" accept="image/*,video/*,.pdf,.doc,.docx">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Submit the form via AJAX when the send button is clicked
+            $('#send-message-form').submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '{% url "send_message" %}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Handle the success response, if needed
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle the error, if needed
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

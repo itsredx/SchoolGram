@@ -1,0 +1,7 @@
+Study Groups: Enable students to form study groups with their 
+classmates or students from other schools who are studying the
+ same subjects. They can use these groups to coordinate study 
+ sessions, share notes, ask questions, and support each other 
+ academically.
+
+ create the study Groups app in django
